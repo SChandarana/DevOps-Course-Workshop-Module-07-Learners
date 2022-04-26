@@ -25,3 +25,8 @@ jobs:
     - name: Test Typescript code
       working-directory: ./DotnetTemplate.Web
       run: npm t
+    
+    - name: Send slack response after build
+      run: curl POST ${{ secrets.SLACK_WEBHOOK_URL }}
+        -H 'Content-Type: application/json'
+        -d "payload={'text': 'hello world'}"
