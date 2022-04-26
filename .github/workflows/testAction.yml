@@ -9,14 +9,14 @@ jobs:
     - uses: actions/checkout@v2 # Adds a step to checkout the repository code
 
     - name: Build CSharp code
-      run: dotnet build
+      run: dotnet buil
 
     - name: Run CSharp tests
       run: dotnet test
     
     - name: Build Typescript code
       working-directory: ./DotnetTemplate.Web
-      run: npm install && npm run buil
+      run: npm install && npm run build
 
     - name: Lint Typescript code
       working-directory: ./DotnetTemplate.Web
@@ -26,9 +26,15 @@ jobs:
       working-directory: ./DotnetTemplate.Web
       run: npm t
     
+  message:
+    name: Notify Slack
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    needs: [build]
+    steps:
     - name: Send slack response on cancellation
       uses: fjogeleit/http-request-action@v1
-      if: ${{ job.status == 'cancelled'}}
+      if: ${{ needs.build.result == 'cancelled'}}
       with:
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
         method: 'POST'
@@ -36,7 +42,7 @@ jobs:
 
     - name: Send slack response on success
       uses: fjogeleit/http-request-action@v1
-      if: ${{ job.status == 'success'}}
+      if: ${{ needs.build.result == 'success'}}
       with:
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
         method: 'POST'
@@ -44,7 +50,7 @@ jobs:
 
     - name: Send slack response on failure
       uses: fjogeleit/http-request-action@v1
-      if: ${{ job.status == 'failure'}}
+      if: ${{ needs.build.result == 'failure'}}
       with:
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
         method: 'POST'
