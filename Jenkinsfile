@@ -4,9 +4,9 @@ pipeline {
         DOTNET_CLI_HOME = '/tmp/dotnet_cli_home'
     }
     stages {
-        stage() {
+        stage('boop') {
             parallel {
-                stage() {
+                stage('Set up dotnet environment') {
                     agent {
                         docker {
                             image 'mcr.microsoft.com/dotnet/sdk:6.0'
@@ -25,7 +25,7 @@ pipeline {
                         }
                     }
                 }
-                stage() {
+                stage('Set up node environment') {
                     agent {
                         docker {
                             image 'node:17-bullseye'
