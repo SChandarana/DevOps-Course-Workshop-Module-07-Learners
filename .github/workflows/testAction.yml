@@ -26,9 +26,26 @@ jobs:
       working-directory: ./DotnetTemplate.Web
       run: npm t
     
-    - name: Send slack response after build
+    - name: Send slack response on cancellation
       uses: fjogeleit/http-request-action@v1
+      if: ${{ job.status == 'cancelled'}}
       with:
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
         method: 'POST'
-        data: '{"text": "hello world"}'
+        data: '{"text": "Action Cancelled"}'
+
+    - name: Send slack response on success
+      uses: fjogeleit/http-request-action@v1
+      if: ${{ job.status == 'success'}}
+      with:
+        url: ${{ secrets.SLACK_WEBHOOK_URL }}
+        method: 'POST'
+        data: '{"text": "Action Succeeded"}'
+
+    - name: Send slack response on failure
+      uses: fjogeleit/http-request-action@v1
+      if: ${{ job.status == 'failure'}}
+      with:
+        url: ${{ secrets.SLACK_WEBHOOK_URL }}
+        method: 'POST'
+        data: '{"text": "Action Failed"}'
