@@ -27,6 +27,8 @@ jobs:
       run: npm t
     
     - name: Send slack response after build
-      run: curl POST ${{ secrets.SLACK_WEBHOOK_URL }}
-        -H 'Content-Type: application/json'
-        -d "payload={'text': 'hello world'}"
+      uses: fjogeleit/http-request-action@v1
+      with:
+        url: ${{ secrets.SLACK_WEBHOOK_URL }}
+        method: 'POST'
+        data: '{"text": "hello world"}'
