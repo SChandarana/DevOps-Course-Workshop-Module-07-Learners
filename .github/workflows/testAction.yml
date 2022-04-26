@@ -34,24 +34,23 @@ jobs:
     steps:
     - name: Send slack response on cancellation
       uses: fjogeleit/http-request-action@v1
-      if: ${{ needs.build.result == 'cancelled'}}
       with:
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
         method: 'POST'
-        data: '{"text": "Action Cancelled"}'
+        data: '{"text": "${{ github.job }} job in worflow ${{ github.workflow }} of ${{ github.repository }} has ${{ job.status }}"}'
 
-    - name: Send slack response on success
-      uses: fjogeleit/http-request-action@v1
-      if: ${{ needs.build.result == 'success'}}
-      with:
-        url: ${{ secrets.SLACK_WEBHOOK_URL }}
-        method: 'POST'
-        data: '{"text": "Action Succeeded"}'
+    # - name: Send slack response on success
+    #   uses: fjogeleit/http-request-action@v1
+    #   if: ${{ needs.build.result == 'success'}}
+    #   with:
+    #     url: ${{ secrets.SLACK_WEBHOOK_URL }}
+    #     method: 'POST'
+    #     data: '{"text": "Action Succeeded"}'
 
-    - name: Send slack response on failure
-      uses: fjogeleit/http-request-action@v1
-      if: ${{ needs.build.result == 'failure'}}
-      with:
-        url: ${{ secrets.SLACK_WEBHOOK_URL }}
-        method: 'POST'
-        data: '{"text": "Action Failed"}'
+    # - name: Send slack response on failure
+    #   uses: fjogeleit/http-request-action@v1
+    #   if: ${{ needs.build.result == 'failure'}}
+    #   with:
+    #     url: ${{ secrets.SLACK_WEBHOOK_URL }}
+    #     method: 'POST'
+    #     data: '{"text": "Action Failed"}'
